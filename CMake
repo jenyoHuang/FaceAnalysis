@@ -1,0 +1,3 @@
+$ cd <opencv_build_directory>
+$ cmake -DOPENCV_EXTRA_MODULES_PATH=<opencv_contrib>/modules -DBUILD_opencv_face <opencv_source_directory>
+$ make -j5
