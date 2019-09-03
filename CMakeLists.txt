@@ -1,28 +1,27 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+set(the_description "Face recognition etc")
+ocv_define_module(face opencv_core
+    opencv_imgproc
+    opencv_objdetect
+    opencv_calib3d   # estimateAffinePartial2D() (trainFacemark)
+    opencv_photo     # seamlessClone() (face_swap sample)
+    WRAP python java
+)
+# NOTE: objdetect module is needed for one of the samples
 
-set(name "facerec")
-project(facerec_cpp_samples)
-
-#SET(OpenCV_DIR /path/to/your/opencv/installation)
-
-# packages
-find_package(OpenCV REQUIRED) # http://opencv.org
-
-# probably you should loop through the sample files here
-add_executable(facerec_demo facerec_demo.cpp)
-target_link_libraries(facerec_demo opencv_core opencv_face opencv_imgproc opencv_highgui)
-
-add_executable(facerec_video facerec_video.cpp)
-target_link_libraries(facerec_video opencv_face opencv_core opencv_imgproc opencv_highgui opencv_objdetect opencv_imgproc)
-
-add_executable(facerec_eigenfaces facerec_eigenfaces.cpp)
-target_link_libraries(facerec_eigenfaces opencv_face opencv_core opencv_imgproc opencv_highgui)
-
-add_executable(facerec_fisherfaces facerec_fisherfaces.cpp)
-target_link_libraries(facerec_fisherfaces opencv_face opencv_core opencv_imgproc opencv_highgui)
-
-add_executable(facerec_lbph facerec_lbph.cpp)
-target_link_libraries(facerec_lbph opencv_face opencv_core opencv_imgproc opencv_highgui)
-
-add_executable(mace_webcam mace_webcam.cpp)
-target_link_libraries(mace_webcam opencv_face opencv_core opencv_imgproc opencv_highgui opencv_videoio)
+set(__commit_hash "8afa57abc8229d611c4937165d20e2a2d9fc5a12")
+set(__file_hash "7505c44ca4eb54b4ab1e4777cb96ac05")
+ocv_download(
+    FILENAME face_landmark_model.dat
+    HASH ${__file_hash}
+    URL
+      "${OPENCV_FACE_ALIGNMENT_URL}"
+      "$ENV{OPENCV_FACE_ALIGNMENT_URL}"
+      "https://raw.githubusercontent.com/opencv/opencv_3rdparty/${__commit_hash}/"
+    DESTINATION_DIR "${CMAKE_BINARY_DIR}/${OPENCV_TEST_DATA_INSTALL_PATH}/cv/face/"
+    ID "data"
+    RELATIVE_URL
+    STATUS res
+)
+if(NOT res)
+  message(WARNING "Face: Can't get model file for face alignment.")
+endif()
